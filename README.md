@@ -191,6 +191,19 @@ Many (but not all) of the videos in the O2 video platform, have multiple renditi
 
 This tutorial sample shows you how to further modify the default controls UX.
 
+##### Changing color <a name="t21"></a>
+
+Ad and content controls, LIVE video indicator color can be changed. Ad/content color can be cahnged by setting `tintColor` to `PlayerViewController.contentControlsViewController.view`. For change LIVE dot color need to set `PlayerViewController.contentControlsViewController.props` like below:
+```
+playerViewController.contentControlsViewController.props = ContentControlsViewController.Props.player(ContentControlsViewController.Props.Player { player in
+	player.item = ContentControlsViewController.Props.Player.Item.playable(ContentControlsViewController.Props.Player.Item.Controls { controls in
+	controls.live.dotColor = UIColor.blue
+	})
+})
+```
+If dot should be same color as controls nothing must be set.
+
+
 ##### Hiding Various Controls buttons <a name="t21"></a>
 
 You can change the look of the default controls UX on a player-by-player basis to suit your app design needs. The elements that can be hidden include:
@@ -204,19 +217,58 @@ You can change the look of the default controls UX on a player-by-player basis t
 * Picture-in-Picture (PiP) button
 * AirPlay button
 
+For change this elements need to cahnge `controls` props in following way:
+```
+playerViewController.contentControlsViewController.props = ContentControlsViewController.Props.player(ContentControlsViewController.Props.Player { player in
+	player.item = ContentControlsViewController.Props.Player.Item.playable(ContentControlsViewController.Props.Player.Item.Controls { controls in
+	controls.airplay = .hidden
+    controls.pictureInPictureControl = .impossible
+    ...
+	})
+})
+```
+
 If you hide the title, and bottom element buttons such as CC/SAP, PiP, and AirPlay, the seekbar will fall down closer to the bottom of the video frame, to cover the gap usually left for those elements. See this tutorial for examples of how to hide/show these elements.
-
-##### Closed Captioning / SAP Settings button <a name="t22"></a>
-
-This new feature of the OMSDK is generally dependent on having this information in the HLS stream. There are ways to filter out what CC languages and SAP audio tracks are available. Also, there’s a way to control what the choices are for a given video. One reason to control this may be to implement a “sticky” closed captioning setting. By default, turning CC on only applies the the current playing video. A next or previous video would not have CC on by default. If you wanted your app to support a sticky setting for this, you would do it yourself. This part of this tutorial will show you how to accomplish this.
 
 ##### Using the 4 Custom Sidebar buttons <a name="t23"></a>
 
 Use this sample to see how to add custom code and behaviors to one of the 4 sidebar buttons. The Sidebar buttons are part of the default player controls UX and are there for you to add up to 4 different overlays/behaviors to your player. You provide the button graphics – icons for normal, selected, and highlighted modes, and you provide a handler to be called in the case of a button tap. The SDK will handle showing/hiding the buttons along with the other player controls.
+```
+playerViewController.contentControlsViewController.sidebarProps = [
+            .init(
+                isEnabled: true,
+                isSelected: false,
+                icons: SideBarView.ButtonProps.Icons(
+                    normal: UIImage(named: "icon-fav")!,
+                    selected: UIImage(named: "icon-fav-active")!,
+                    highlighted: nil),
+                handler: { }),
+            ...]
+```
 
-##### Setting the LIVE indicator’s tint color <a name="t24"></a>
+##### Using the Custom Controls <a name="t23"></a>
 
-The LIVE indicator only appears during a LIVE streaming video playback. This will not appear for a video on demand video. Part of the LIVE indicator is the ability to colorize the • that appears next to the LIVE indicator. In general, you may want to use a standard pure-red color. However, it’s possible that you want to use your app’s brand color or while here instead. You can use black or any dark-gray color, but that is ill advised, because of the general nature of video to have lots of blacks in it. The sample code in this example shows how to set this.
+Use this sample to see how to add custom controls. The `PlayerViewController` has `contentControlsViewController` which type is `ContentControlsViewController`. To create custom controls need to subclass `ContentControlsViewController` and set its instance to `contentControlsViewController`. `DefaultControlsViewController` is good example of this.
+
+##### Mute/Unmute <a name="t23"></a>
+
+`Player` has API for mute/unmute functions. To use it need to call instance of `Player` inside `PlayerViewController` that has `mute()` and `unmute()` functions.
+```
+let player = playerViewController.player
+if player?.props.isMuted == true {
+    player?.unmute()
+} else {
+    player?.mute()
+}
+```
+
+##### Full screen <a name="t23"></a>
+
+If player should support full screen, see [Full screen example iOS](https://github.com/aol-public/OneMobileSDK-playground-ios/tree/master/Examples/iOS%20Fullscreen)
+
+##### Closed Captioning / SAP Settings button <a name="t22"></a>
+
+This new feature of the OMSDK is generally dependent on having this information in the HLS stream. There are ways to filter out what CC languages and SAP audio tracks are available. Also, there’s a way to control what the choices are for a given video. One reason to control this may be to implement a “sticky” closed captioning setting. By default, turning CC on only applies the current playing video. A next or previous video would not have CC on by default. If you wanted your app to support a sticky setting for this, you would do it yourself. This part of this tutorial will show you how to accomplish this.
 
 ### Tutorial 3 – Observing the Player <a name="t3"></a>
 
