@@ -18,29 +18,30 @@ As always, we highly appreciate, welcome, and value all feedback on this documen
 8. [How the SDK works](#how)
 9. [Default (Player) Controls UX](#ux)
 10. [TL;DR – Quick Start](#qs)
-11. [Tutorial 1 – Playing Videos](#t1)
-	1. [Setting default player controls’ tint color](#t11)
-	2. [Playing with AutoPlay on/off](#t12)
-	3. [Playing Muted](#t13)
+11. [Tutorial 0 – Library Integration](#t0)
+12. [Tutorial 1 – Playing Videos](#t1)
+	1. [Playing with AutoPlay on/off](#t11)
+	2. [Showing thumbnails for videos](#t12)
+	3. [Modifying metadata of the player(ANDROID ONLY)](#t13)
 	4. [Disabling HLS (or forcing MP4 playback)](#t14)
-12. [Tutorial 2 – Customizing the Default Controls UX](#t2)
+13. [Tutorial 2 – Customizing the Default Controls UX](#t2)
 	1. [Hiding Various Controls buttons](#t21)
 	2. [Closed Captioning / SAP Settings button](#t22)
 	3. [Using the 4 Custom Sidebar buttons](#t23)
 	4. [Setting the LIVE indicator’s tint color](#t24)
-13. [Tutorial 3 – Observing the Player](#t3)
+14. [Tutorial 3 – Observing the Player](#t3)
 	1. [Pausing or Resume Playback and Seeking](#t31)
 	2. [Looping Playback](#t32)
 	3. [LIVE, VOD, or 360°?](#t33)
 	4. [Manually Hooking up Previous or Next Videos](#t34)
-14. [Tutorial 4 – Error Handling in the SDK](#t4)
+15. [Tutorial 4 – Error Handling in the SDK](#t4)
 	1. [SDK Initialization Errors](#t41)
 	2. [Player Initialization Errors](#t42)
 	3. [Restricted Videos](#t43)
-15. [Specific Notes for tvOS Apps](#tvos)
-16. [Tutorial 5 – Playing videos on tvOS](#t5)
-17. [Next Steps – Getting O2 Video/Playlist IDs into your apps](#go2)
-18. [Next Steps – Controlling Ads via your O2 Portal Account](#co2)
+16. [Specific Notes for tvOS Apps](#tvos)
+17. [Tutorial 5 – Playing videos on tvOS](#t5)
+18. [Next Steps – Getting O2 Video/Playlist IDs into your apps](#go2)
+19. [Next Steps – Controlling Ads via your O2 Portal Account](#co2)
 
 
 ## What is the O2 Mobile SDK? <a name="what"></a>
@@ -162,29 +163,141 @@ The default iOS Custom Controls UX implementation repo can be found here:
 Want to dive right in, quickly and directly, you can jump here to get started using our legacy documentation: 
 [Getting Started for iOS](https://github.com/aol-public/OneMobileSDK-playground-ios/blob/master/Usage%20guide.md)
 
+
+### Tutorial 0 – Library Integration <a name="t0"></a>
+#### IOS
+...
+
+#### Android
+##### Gradle integration
+
+In `allprojects.repositories` section of project `build.gradle` add link to our maven repository :
+
+```gradle
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://raw.github.com/aol-public/OneMobileSDK-releases-android/maven/' }
+    }
+}
+```
+
+In `android.dependencies` section of module `build.gradle` add dependency to OMSDK library:
+
+```gradle
+apply plugin: 'com.android.application'
+
+android {
+    // ...
+    
+    dependencies {
+        implementation 'com.aol.one.publishers.android:sdk:2.17'
+        // ...
+    }
+}
+```
+
+
 ### Tutorial 1 – Playing Videos <a name="t1"></a>
+This tutorial shows you how to quickly init the OMSDK and play videos using all the default options and behaviors, with very little code.
 
-**insert tutorial link here**
+To start using the OMSDK, you will first need to construct an instance of __OneSDK__.
+#### IOS
+...
 
-This tutorial sample shows you how to quickly init the OMSDK and play videos using all the default options and behaviors, with very little code. Playing a single video, a list of individual videos, or videos from an O2 Playlist are all done the same way. The only difference between playing a single video or multiple videos is that the SDK strings multiple videos together, connects up the previous and next player controls UX buttons, and if AutoPlay is on - plays them straight through.
+#### Android
+```java
+new OneSDKBuilder(getApplicationContext())
+                .create(new OneSDKBuilder.Callback() {
+                    @Override
+                    public void onSuccess(@NonNull OneSDK oneSDK) {
+		    
+                    }
+		    
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+		    
+                    }
+                });
+```
+Playing a single video, a list of individual videos, or videos from an O2 Playlist are all done the same way. The only difference between playing a single video or multiple videos is that the SDK strings multiple videos together, connects up the previous and next player controls UX buttons, and if AutoPlay is on - plays them straight through.
 
-##### Setting default player controls’ tint color <a name="t11"></a>
+Using oneSDK instance from above you can build player for __videoId__
+#### IOS
+...
 
-The built-in tint color of the default video player controls UX is pink/magenta. This is deliberate. You set the tint color of the default player controls by setting the UIViewController’s tintColor. This can be done programmatically or via Interface Builder (IB) in Xcode, for your UIViewController, if you’re instantiating your view that way. In this sample, you’ll find a code block that shows you how to override the default controls color.
+#### Android
+```java
+oneSDK.createBuilder()
+        .buildForVideo(String videoId, Player.Callback callback);
+```
 
-##### Playing with AutoPlay on/off <a name="t12"></a>
+or for an array of __videoIds__
+#### IOS
+...
 
-By default, the SDK plays videos with AutoPlay mode on. This means, that as soon as you construct a `Player`, the first video queues to play immediately (first, calling for an ad, of course). In this case, no further user action is required. As soon as the ad or the video is ready to play, it will. To override this behavior and turn off AutoPlay, look for the alternate way to construct the `Player` in this sample.
+#### Android
+```java
+oneSDK.createBuilder()
+        .buildForVideoList(String[] videoIds, Player.Callback callback);
+```
+
+or for __playlistId__
+#### IOS
+...
+
+#### Android
+```java
+oneSDK.createBuilder()
+        .buildForPlaylist(String playlistId, Player.Callback callback);
+```
+
+For further interaction with Player objects please refer to our examples:
+#### IOS
+...
+
+#### Android
+Play videos in  PlayerFragment [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/VideoInFragment)
+
+Play videos in PlayerView [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/VideoInView)
+
+
+#### Playing with Autoplay on/off <a name="t11"></a>
+
+By default, OMSDK plays videos with AutoPlay mode on. This means, that as soon as you construct a `Player`, the first video queues to play immediately (first, calling for an ad, of course). In this case, no further user action is required. As soon as the ad or the video is ready to play, it will.
+
+To override this behavior you can build player setting desired Autoplay value:
+#### IOS
+...
+
+#### Android
+```java
+oneSDK.createBuilder()
+        .setAutoplay(false)
+        // .buildFor...
+```
 
 If AutoPlay mode is off, the user will have to tap the play button to start the playback process. Alternatively, you can programmatically do this by controlling the Player object.
 
-##### Playing Muted <a name="t13"></a>
+#### Showing thumbnails for videos <a name="t12"></a>
+By default, OMSDK does not show thumbnails embeded in videos but it has all the api for that. All network operations connected with fetching images should be handled by integrators.
 
-You can easily control the mute state of the `Player` object. In this sample, you’ll find a code block that shows you how to set the mute state of the `Player` object.
+Here is a  simple example how to show thumbnails:
+#### IOS
+...
 
-##### Disabling HLS (or forcing MP4 playback) <a name="t14"></a>
+#### Android
+Load Content Thumbnails [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ContentLoadThumbnails)
 
-Many (but not all) of the videos in the O2 video platform, have multiple renditions. There may be some set of circumstances where you do not want to use HLS (.m3u8) renditions, and therefore, want to force the alternate high resolution .mp4 rendition. As a result, our SDK has the ability to override or disable getting the default HLS rendition. Look for this alternate initialization code in this tutorial sample for an example of how to programmatically control this.
+#### Modifying metadata of the player (ANDROID ONLY) <a name="t13"></a>
+By default, OMSDK does all the work for you and provides you with Player object that is fully ready to use. As an alternative, you can check and/or modify all the metadata before constructing player.
+
+Here is a  simple example on changing video title:
+#### Android
+Override Content Metadata [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ContentOverrideMetadata)
+
 
 ### Tutorial 2 – Customizing the Default Controls UX <a name="t2"></a>
 **insert tutorial link here**
