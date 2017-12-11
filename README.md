@@ -165,16 +165,47 @@ Want to dive right in, quickly and directly, you can jump here to get started us
 
 
 ### Tutorial 0 – Library Integration <a name="t0"></a>
-#### IOS
-...
+<details>
+	<summary>iOS</summary>
 
-#### Android
+iOS framework supports following package managers:
+* [Cocoapods](http://cocoapods.org)
+* [Carthage](https://github.com/Carthage/Carthage)
+
+##### Cocoapods
+
+To integrate framework via Cocoapods need, specify it in your `Podfile`
+```ruby
+pod 'OneMobileSDK-Xcode9.1'
+```
+
+Then, run the following command:
+
+```bash
+$ pod install
+```
+
+##### Carthage
+
+To integrate framework via Carthage need, specify it in your `Cartfile`
+```ruby
+github "vidible/OneMobileSDK-releases"
+```
+Run `carthage update` to build the framework and drag the built `*.framework` into your Xcode project.
+</details>
+<details>
+	<summary>Android</summary>
+```java
+oneSDK.createBuilder()
+        .setAutoplay(false)
+        // .buildFor...
+```
+
 ##### Gradle integration
 
 In `allprojects.repositories` section of project `build.gradle` add link to our maven repository :
 
 ```gradle
-
 allprojects {
     repositories {
         google()
@@ -198,16 +229,29 @@ android {
     }
 }
 ```
+</details>
 
 
 ### Tutorial 1 – Playing Videos <a name="t1"></a>
 This tutorial shows you how to quickly init the OMSDK and play videos using all the default options and behaviors, with very little code.
 
 To start using the OMSDK, you will first need to construct an instance of __OneSDK__.
-#### IOS
-...
 
-#### Android
+<details>
+	<summary>iOS</summary>
+```swift
+OneSDK.Provider.default.getConfiguration().onComplete(callback: {
+	switch $0 {
+		case .value(let player):
+		...
+		case .error(let error):
+		...
+	}
+})
+```
+</details>
+<details>
+	<summary>Android</summary>
 ```java
 new OneSDKBuilder(getApplicationContext())
                 .create(new OneSDKBuilder.Callback() {
@@ -222,62 +266,98 @@ new OneSDKBuilder(getApplicationContext())
                     }
                 });
 ```
+</details>
+
 Playing a single video, a list of individual videos, or videos from an O2 Playlist are all done the same way. The only difference between playing a single video or multiple videos is that the SDK strings multiple videos together, connects up the previous and next player controls UX buttons, and if AutoPlay is on - plays them straight through.
 
 Using oneSDK instance from above you can build player for __videoId__
-#### IOS
-...
 
-#### Android
+<details>
+	<summary>iOS</summary>
+```swift
+OneSDK.Provider.default.getConfiguration().map(OneSDK.init).then {
+	$0.getPlayer(videoID: videoId)
+	}.onComplete(callback: handle)
+```
+</details>
+<details>
+	<summary>Android</summary>
 ```java
 oneSDK.createBuilder()
         .buildForVideo(String videoId, Player.Callback callback);
 ```
+</details>
 
 or for an array of __videoIds__
-#### IOS
-...
 
-#### Android
+<details>
+	<summary>iOS</summary>
+```swift
+OneSDK.Provider.default.getConfiguration().map(OneSDK.init).then {
+	$0.getPlayer(videoIDs: videoIds)
+	}.onComplete(callback: handle)
+```
+</details>
+<details>
+	<summary>Android</summary>
 ```java
 oneSDK.createBuilder()
         .buildForVideoList(String[] videoIds, Player.Callback callback);
 ```
+</details>
 
 or for __playlistId__
-#### IOS
-...
 
-#### Android
+<details>
+	<summary>iOS</summary>
+```swift
+OneSDK.Provider.default.getConfiguration().map(OneSDK.init).then {
+	$0.getPlayer(playlistID: playlistId)
+	}.onComplete(callback: handle)
+```
+</details>
+<details>
+	<summary>Android</summary>
 ```java
 oneSDK.createBuilder()
         .buildForPlaylist(String playlistId, Player.Callback callback);
 ```
+</details>
 
 For further interaction with Player objects please refer to our examples:
-#### IOS
-...
 
-#### Android
+<details>
+	<summary>iOS</summary>
+	...
+</details>
+<details>
+	<summary>Android</summary>
+
 Play videos in  PlayerFragment [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/VideoInFragment)
 
 Play videos in PlayerView [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/VideoInView)
-
+</details>
 
 #### Playing with Autoplay on/off <a name="t11"></a>
 
 By default, OMSDK plays videos with AutoPlay mode on. This means, that as soon as you construct a `Player`, the first video queues to play immediately (first, calling for an ad, of course). In this case, no further user action is required. As soon as the ad or the video is ready to play, it will.
 
 To override this behavior you can build player setting desired Autoplay value:
-#### IOS
-...
 
-#### Android
-```java
-oneSDK.createBuilder()
-        .setAutoplay(false)
-        // .buildFor...
+<details>
+	<summary>iOS</summary>
+```swift
+OneSDK.Provider.default.getConfiguration()
+							.map(OneSDK.init)
+							.then { $0.getPlayer(videoID: videoID, autoplay: true) }
+				            .onComplete(callback: handle)
+            
 ```
+</details>
+<details>
+	<summary>Android</summary>
+...
+</details>
 
 If AutoPlay mode is off, the user will have to tap the play button to start the playback process. Alternatively, you can programmatically do this by controlling the Player object.
 
@@ -285,19 +365,32 @@ If AutoPlay mode is off, the user will have to tap the play button to start the 
 By default, OMSDK does not show thumbnails embeded in videos but it has all the api for that. All network operations connected with fetching images should be handled by integrators.
 
 Here is a  simple example how to show thumbnails:
-#### IOS
-...
 
-#### Android
+<details>
+	<summary>iOS</summary>
+...
+</details>
+<details>
+	<summary>Android</summary>
+
 Load Content Thumbnails [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ContentLoadThumbnails)
+</details>
+
 
 #### Modifying metadata of the player (ANDROID ONLY) <a name="t13"></a>
 By default, OMSDK does all the work for you and provides you with Player object that is fully ready to use. As an alternative, you can check and/or modify all the metadata before constructing player.
 
 Here is a  simple example on changing video title:
-#### Android
-Override Content Metadata [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ContentOverrideMetadata)
 
+<details>
+	<summary>iOS</summary>
+...
+</details>
+<details>
+	<summary>Android</summary>
+
+Override Content Metadata [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ContentOverrideMetadata)
+</details>
 
 ### Tutorial 2 – Customizing the Default Controls UX <a name="t2"></a>
 **insert tutorial link here**
@@ -306,8 +399,12 @@ This tutorial sample shows you how to further modify the default controls UX.
 
 ##### Changing color <a name="t21"></a>
 
-Ad and content controls, LIVE video indicator color can be changed. Ad/content color can be cahnged by setting `tintColor` to `PlayerViewController.contentControlsViewController.view`. For change LIVE dot color need to set `PlayerViewController.contentControlsViewController.props` like below:
-```
+Ad and content controls, LIVE video indicator color can be changed.
+
+<details>
+	<summary>iOS</summary>
+Ad/content color can be cahnged by setting `tintColor` to `PlayerViewController.contentControlsViewController.view`. For change LIVE dot color need to set `PlayerViewController.contentControlsViewController.props` like below:
+```swift
 playerViewController.contentControlsViewController.props = ContentControlsViewController.Props.player(ContentControlsViewController.Props.Player { player in
 	player.item = ContentControlsViewController.Props.Player.Item.playable(ContentControlsViewController.Props.Player.Item.Controls { controls in
 	controls.live.dotColor = UIColor.blue
@@ -315,7 +412,11 @@ playerViewController.contentControlsViewController.props = ContentControlsViewCo
 })
 ```
 If dot should be same color as controls nothing must be set.
-
+</details>
+<details>
+	<summary>Android</summary>
+...
+</details>
 
 ##### Hiding Various Controls buttons <a name="t21"></a>
 
@@ -330,8 +431,10 @@ You can change the look of the default controls UX on a player-by-player basis t
 * Picture-in-Picture (PiP) button
 * AirPlay button
 
-For change this elements need to cahnge `controls` props in following way:
-```
+<details>
+	<summary>iOS</summary>
+Need to cahnge `controls` props in following way:
+```swift
 playerViewController.contentControlsViewController.props = ContentControlsViewController.Props.player(ContentControlsViewController.Props.Player { player in
 	player.item = ContentControlsViewController.Props.Player.Item.playable(ContentControlsViewController.Props.Player.Item.Controls { controls in
 	controls.airplay = .hidden
@@ -340,13 +443,21 @@ playerViewController.contentControlsViewController.props = ContentControlsViewCo
 	})
 })
 ```
+</details>
+<details>
+	<summary>Android</summary>
+...
+</details>
 
 If you hide the title, and bottom element buttons such as CC/SAP, PiP, and AirPlay, the seekbar will fall down closer to the bottom of the video frame, to cover the gap usually left for those elements. See this tutorial for examples of how to hide/show these elements.
 
 ##### Using the 4 Custom Sidebar buttons <a name="t23"></a>
 
 Use this sample to see how to add custom code and behaviors to one of the 4 sidebar buttons. The Sidebar buttons are part of the default player controls UX and are there for you to add up to 4 different overlays/behaviors to your player. You provide the button graphics – icons for normal, selected, and highlighted modes, and you provide a handler to be called in the case of a button tap. The SDK will handle showing/hiding the buttons along with the other player controls.
-```
+
+<details>
+	<summary>iOS</summary>
+```swift
 playerViewController.contentControlsViewController.sidebarProps = [
             .init(
                 isEnabled: true,
@@ -358,6 +469,11 @@ playerViewController.contentControlsViewController.sidebarProps = [
                 handler: { }),
             ...]
 ```
+</details>
+<details>
+	<summary>Android</summary>
+...
+</details>
 
 ##### Using the Custom Controls <a name="t23"></a>
 
@@ -365,8 +481,10 @@ Use this sample to see how to add custom controls. The `PlayerViewController` ha
 
 ##### Mute/Unmute <a name="t23"></a>
 
+<details>
+	<summary>iOS</summary>
 `Player` has API for mute/unmute functions. To use it need to call instance of `Player` inside `PlayerViewController` that has `mute()` and `unmute()` functions.
-```
+```swift
 let player = playerViewController.player
 if player?.props.isMuted == true {
     player?.unmute()
@@ -374,10 +492,24 @@ if player?.props.isMuted == true {
     player?.mute()
 }
 ```
+</details>
+<details>
+	<summary>Android</summary>
+...
+</details>
 
 ##### Full screen <a name="t23"></a>
 
-If player should support full screen, see [Full screen example iOS](https://github.com/aol-public/OneMobileSDK-playground-ios/tree/master/Examples/iOS%20Fullscreen)
+If player should support full screen.
+
+<details>
+	<summary>iOS</summary>
+[Full screen example iOS](https://github.com/aol-public/OneMobileSDK-playground-ios/tree/master/Examples/iOS%20Fullscreen)
+</details>
+<details>
+	<summary>Android</summary>
+...
+</details>
 
 ##### Closed Captioning / SAP Settings button <a name="t22"></a>
 
