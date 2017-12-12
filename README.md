@@ -15,10 +15,13 @@ As always, we highly appreciate, welcome, and value all feedback on this documen
 	2. [Showing thumbnails for videos](#t12)
 	3. [Modifying metadata of the player(ANDROID ONLY)](#t13)
 4. [Tutorial 2 – Customizing the Default Controls UX](#t2)
-	1. [Hiding Various Controls buttons](#t21)
-	2. [Closed Captioning / SAP Settings button](#t22)
+	1. [Changing colors](#t21)
+	2. [Hiding Various Content Controls buttons](#t22)
 	3. [Using the 4 Custom Sidebar buttons](#t23)
-	4. [Setting the LIVE indicator’s tint color](#t24)
+	4. [Using Custom Content Controls](#t24)
+	5. [Mute/Unmute](#t25)
+	6. [Full screen](#t26)
+	7. [Closed Captioning / SAP Settings button](#t27)
 5. [Tutorial 3 – Observing the Player](#t3)
 	1. [Pausing or Resume Playback and Seeking](#t31)
 	2. [Looping Playback](#t32)
@@ -119,7 +122,6 @@ OneSDK.Provider.default.getConfiguration().onComplete(callback: {
 })
 ```
 </details>
-
 <details>
 	<summary>Android</summary>
 	
@@ -137,6 +139,7 @@ new OneSDKBuilder(getApplicationContext())
 });
 ```
 </details>
+
 <br>
 Playing a single video, a list of individual videos, or videos from an O2 Playlist are all done the same way. The only difference between playing a single video or multiple videos is that the SDK strings multiple videos together, connects up the previous and next player controls UX buttons, and if AutoPlay is on - plays them straight through.
 
@@ -213,12 +216,10 @@ For further interaction with Player objects please refer to our examples:
 </details>
 <details>
 	<summary>Android</summary>
+	
+##### [Play videos in  PlayerFragment](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/VideoInFragment)
 
-<br>
-
-Play videos in  PlayerFragment [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/VideoInFragment)
-
-Play videos in PlayerView [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/VideoInView)
+##### [Play videos in PlayerView](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/VideoInView)
 </details>
 
 #### Playing with Autoplay on/off <a name="t11"></a>
@@ -251,9 +252,9 @@ oneSDK.createBuilder()
 If AutoPlay mode is off, the user will have to tap the play button to start the playback process. Alternatively, you can programmatically do this by controlling the Player object.
 
 #### Showing thumbnails for videos <a name="t12"></a>
-By default, OMSDK does not show thumbnails embeded in videos but it has all the api for that. All network operations connected with fetching images should be handled by integrators.
+By default, OMSDK does not show thumbnails embeded in videos but it has all the api for that.
 
-Here is a  simple example how to show thumbnails:
+Here is a  simple example how to show content thumbnails:
 
 <details>
 	<summary>iOS</summary>
@@ -261,32 +262,30 @@ Here is a  simple example how to show thumbnails:
 </details>
 <details>
 	<summary>Android</summary>
-<br>
-
-Load Content Thumbnails [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ContentLoadThumbnails)
+	
+##### [Load Content Thumbnails](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ContentLoadThumbnails)
 </details>
 
-#### Modifying metadata of the player (ANDROID ONLY) <a name="t13"></a>
-By default, OMSDK does all the work for you and provides you with Player object that is fully ready to use. As an alternative, you can check and/or modify all the metadata before constructing player.
+#### Modifying video metadata for the player (ANDROID ONLY) <a name="t13"></a>
+By default, OMSDK does all the work for you and provides you with Player object that is fully ready to use. As an alternative, you can check and/or modify all the video metadata before constructing player.
 
 Here is a  simple example on changing video title:
 
 <details>
 	<summary>Android</summary>
-<br>
-
-Override Content Metadata [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ContentOverrideMetadata)
+	
+##### [Override Content Metadata](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ContentOverrideMetadata)
 </details>
 
 ### Tutorial 2 – Customizing the Default Controls UX <a name="t2"></a>
-**insert tutorial link here**
 
-This tutorial sample shows you how to further modify the default controls UX.
+This tutorial shows you how to customize the default controls UX.
 
-##### Changing color <a name="t21"></a>
+#### Changing colors <a name="t21"></a>
 
-Ad and content controls, LIVE video indicator color can be changed.
+You can change colors of advertisement controls, content controls and LIVE video indicator dot.
 
+Here is a  simple example how to set different colors to default controls:
 <details>
 	<summary>iOS</summary>
 Ad/content color can be cahnged by setting `tintColor` to `PlayerViewController.contentControlsViewController.view`. For change LIVE dot color need to set `PlayerViewController.contentControlsViewController.props` like below:
@@ -301,12 +300,14 @@ If dot should be same color as controls nothing must be set.
 </details>
 <details>
 	<summary>Android</summary>
-...
+	
+##### [Themed Controls](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ControlsThemedControls)
 </details>
 
-##### Hiding Various Controls buttons <a name="t21"></a>
+#### Hiding Various Content Controls buttons <a name="t22"></a>
 
-You can change the look of the default controls UX on a player-by-player basis to suit your app design needs. The elements that can be hidden include:
+You can change the look of the default content controls UX on a player-by-player basis to suit your app design needs. The elements that can be hidden include:
+
 * ± 10 second skip buttons
 * Previous and Next buttons
 * Seekbar
@@ -315,8 +316,11 @@ You can change the look of the default controls UX on a player-by-player basis t
 * Video duration
 * Closed Captioning/SAP Settings button
 * Picture-in-Picture (PiP) button
-* AirPlay button
+* AirPlay/Chromecast button
 
+If you hide title and bottom element buttons such as CC/SAP, PiP, and AirPlay/Chromecast, the seekbar will fall down closer to the bottom of the video frame, to cover the gap usually left for those elements. See this tutorial for examples of how to hide/show these elements.
+
+Here is a  simple example how to modify default controls:
 <details>
 	<summary>iOS</summary>
 Need to cahnge `controls` props in following way:
@@ -332,17 +336,19 @@ playerViewController.contentControlsViewController.props = ContentControlsViewCo
 </details>
 <details>
 	<summary>Android</summary>
-...
+	
+##### [Modified Content Controls](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ControlsModifiedContentControls)
 </details>
 
-If you hide the title, and bottom element buttons such as CC/SAP, PiP, and AirPlay, the seekbar will fall down closer to the bottom of the video frame, to cover the gap usually left for those elements. See this tutorial for examples of how to hide/show these elements.
+#### Using the 4 Custom Sidebar buttons <a name="t23"></a>
 
-##### Using the 4 Custom Sidebar buttons <a name="t23"></a>
+The Sidebar buttons are part of the default player controls UX and are there for you to add up to 4 different overlays/behaviors to your player. You provide the button graphics – icons for normal, selected, and highlighted modes, and you provide a handler to be called in the case of a button tap. The SDK will handle showing/hiding the buttons along with the other player controls.
 
-Use this sample to see how to add custom code and behaviors to one of the 4 sidebar buttons. The Sidebar buttons are part of the default player controls UX and are there for you to add up to 4 different overlays/behaviors to your player. You provide the button graphics – icons for normal, selected, and highlighted modes, and you provide a handler to be called in the case of a button tap. The SDK will handle showing/hiding the buttons along with the other player controls.
+Use this code to add your custom buttons to sidebar:
 
 <details>
 	<summary>iOS</summary>
+	
 ```swift
 playerViewController.contentControlsViewController.sidebarProps = [
             .init(
@@ -358,15 +364,42 @@ playerViewController.contentControlsViewController.sidebarProps = [
 </details>
 <details>
 	<summary>Android</summary>
-...
+<br>
+When using PlayerFragment:
+	
+```java
+playerFragment.getPlayerView().getContentControls()
+	.getSidePanel().addView(View yourButton);
+```
+
+When using PlayerView:
+	
+```java
+playerView.getContentControls()
+	.getSidePanel().addView(View yourButton);
+```
 </details>
 
-##### Using the Custom Controls <a name="t23"></a>
+#### Using Custom Content Controls <a name="t24"></a>
+
+OMSDK provides embeded controls for the player and you are free to customize them any way you like. If that is not enogh for you, you can make you own fully custom controls and hook them up to our player. 
+
+Here is a  simple example how to implement and use custom content controls:
+
+<details>
+	<summary>iOS</summary>
 
 Use this sample to see how to add custom controls. The `PlayerViewController` has `contentControlsViewController` which type is `ContentControlsViewController`. To create custom controls need to subclass `ContentControlsViewController` and set its instance to `contentControlsViewController`. `DefaultControlsViewController` is good example of this.
+</details>
+<details>
+	<summary>Android</summary>
+	
+##### [Custom Content Controls](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ControlsCustomContentControls)
+</details>
 
-##### Mute/Unmute <a name="t23"></a>
+#### Mute/Unmute <a name="t25"></a>
 
+You can easily control the mute state of the Player object directly.
 <details>
 	<summary>iOS</summary>
 `Player` has API for mute/unmute functions. To use it need to call instance of `Player` inside `PlayerViewController` that has `mute()` and `unmute()` functions.
@@ -381,23 +414,35 @@ if player?.props.isMuted == true {
 </details>
 <details>
 	<summary>Android</summary>
-...
+<br>
+To mute:
+
+```java
+player.setMute(true);
+```
+To unmute:
+
+```java
+player.setMute(false);
+```
+Here is an example how to implement volume controls using the OMSDK's SideBar:
+##### [Sidebar Volume Control](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ControlsSidebarVolume)
 </details>
 
-##### Full screen <a name="t23"></a>
+#### Full screen <a name="t26"></a>
 
-If player should support full screen.
-
+If player should support full screen, you can refer to this example:
 <details>
 	<summary>iOS</summary>
 [Full screen example iOS](https://github.com/aol-public/OneMobileSDK-playground-ios/tree/master/Examples/iOS%20Fullscreen)
 </details>
 <details>
 	<summary>Android</summary>
-...
+	
+##### [Sidebar Full Screen](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ControlsSidebarFullscreen)
 </details>
 
-##### Closed Captioning / SAP Settings button <a name="t22"></a>
+#### Closed Captioning / SAP Settings button <a name="t27"></a>
 
 This new feature of the OMSDK is generally dependent on having this information in the HLS stream. There are ways to filter out what CC languages and SAP audio tracks are available. Also, there’s a way to control what the choices are for a given video. One reason to control this may be to implement a “sticky” closed captioning setting. By default, turning CC on only applies the current playing video. A next or previous video would not have CC on by default. If you wanted your app to support a sticky setting for this, you would do it yourself. This part of this tutorial will show you how to accomplish this.
 
