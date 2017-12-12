@@ -14,7 +14,6 @@ As always, we highly appreciate, welcome, and value all feedback on this documen
 	1. [Playing with AutoPlay on/off](#t11)
 	2. [Showing thumbnails for videos](#t12)
 	3. [Modifying metadata of the player(ANDROID ONLY)](#t13)
-	4. [Disabling HLS (or forcing MP4 playback)](#t14)
 4. [Tutorial 2 – Customizing the Default Controls UX](#t2)
 	1. [Hiding Various Controls buttons](#t21)
 	2. [Closed Captioning / SAP Settings button](#t22)
@@ -35,25 +34,24 @@ As always, we highly appreciate, welcome, and value all feedback on this documen
 10. [Next Steps – Controlling Ads via your O2 Portal Account](#co2)
 
 ## TL;DR – Quick Start <a name="qs"></a>
-Want to dive right in, quickly and directly, you can jump here to get started using our legacy documentation: 
-[Getting Started for iOS](https://github.com/aol-public/OneMobileSDK-playground-ios/blob/master/Usage%20guide.md)
+Want to dive right in, quickly and directly, you can jump here to get started.
 
 ### Tutorial 0 – Library Integration <a name="t0"></a>
 <details>
 	<summary>iOS</summary>
 
-iOS framework supports following package managers:
+##### iOS framework supports following package managers:
 * [Cocoapods](http://cocoapods.org)
 * [Carthage](https://github.com/Carthage/Carthage)
 
 ##### Cocoapods
 
-To integrate framework via Cocoapods need, specify it in your `Podfile`
+To integrate framework via Cocoapods you need to specify it in your `Podfile`
 ```ruby
 pod 'OneMobileSDK-Xcode9.1'
 ```
 
-Then, run the following command:
+Then run the following command:
 
 ```bash
 $ pod install
@@ -61,19 +59,15 @@ $ pod install
 
 ##### Carthage
 
-To integrate framework via Carthage need, specify it in your `Cartfile`
+To integrate framework via Carthage you need to specify it in your `Cartfile`
 ```ruby
 github "vidible/OneMobileSDK-releases"
 ```
 Run `carthage update` to build the framework and drag the built `*.framework` into your Xcode project.
 </details>
+
 <details>
 	<summary>Android</summary>
-```java
-oneSDK.createBuilder()
-        .setAutoplay(false)
-        // .buildFor...
-```
 
 ##### Gradle integration
 
@@ -113,6 +107,7 @@ To start using the OMSDK, you will first need to construct an instance of __OneS
 
 <details>
 	<summary>iOS</summary>
+	
 ```swift
 OneSDK.Provider.default.getConfiguration().onComplete(callback: {
 	switch $0 {
@@ -124,30 +119,32 @@ OneSDK.Provider.default.getConfiguration().onComplete(callback: {
 })
 ```
 </details>
+
 <details>
 	<summary>Android</summary>
+	
 ```java
 new OneSDKBuilder(getApplicationContext())
-                .create(new OneSDKBuilder.Callback() {
-                    @Override
-                    public void onSuccess(@NonNull OneSDK oneSDK) {
-		    
-                    }
-		    
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-		    
-                    }
-                });
+	.create(new OneSDKBuilder.Callback() {
+	@Override
+	public void onSuccess(@NonNull OneSDK oneSDK) {
+		...
+	}
+	@Override
+	public void onFailure(@NonNull Exception e) {
+		...
+	}
+});
 ```
 </details>
-
+<br>
 Playing a single video, a list of individual videos, or videos from an O2 Playlist are all done the same way. The only difference between playing a single video or multiple videos is that the SDK strings multiple videos together, connects up the previous and next player controls UX buttons, and if AutoPlay is on - plays them straight through.
 
 Using oneSDK instance from above you can build player for __videoId__
 
 <details>
 	<summary>iOS</summary>
+	
 ```swift
 OneSDK.Provider.default.getConfiguration().map(OneSDK.init).then {
 	$0.getPlayer(videoID: videoId)
@@ -156,16 +153,20 @@ OneSDK.Provider.default.getConfiguration().map(OneSDK.init).then {
 </details>
 <details>
 	<summary>Android</summary>
+	
 ```java
 oneSDK.createBuilder()
         .buildForVideo(String videoId, Player.Callback callback);
 ```
 </details>
 
+<br>
+
 or for an array of __videoIds__
 
 <details>
 	<summary>iOS</summary>
+	
 ```swift
 OneSDK.Provider.default.getConfiguration().map(OneSDK.init).then {
 	$0.getPlayer(videoIDs: videoIds)
@@ -174,16 +175,20 @@ OneSDK.Provider.default.getConfiguration().map(OneSDK.init).then {
 </details>
 <details>
 	<summary>Android</summary>
+	
 ```java
 oneSDK.createBuilder()
         .buildForVideoList(String[] videoIds, Player.Callback callback);
 ```
 </details>
 
+<br>
+
 or for __playlistId__
 
 <details>
 	<summary>iOS</summary>
+	
 ```swift
 OneSDK.Provider.default.getConfiguration().map(OneSDK.init).then {
 	$0.getPlayer(playlistID: playlistId)
@@ -192,12 +197,14 @@ OneSDK.Provider.default.getConfiguration().map(OneSDK.init).then {
 </details>
 <details>
 	<summary>Android</summary>
+	
 ```java
 oneSDK.createBuilder()
         .buildForPlaylist(String playlistId, Player.Callback callback);
 ```
 </details>
 
+<br>
 For further interaction with Player objects please refer to our examples:
 
 <details>
@@ -206,6 +213,8 @@ For further interaction with Player objects please refer to our examples:
 </details>
 <details>
 	<summary>Android</summary>
+
+<br>
 
 Play videos in  PlayerFragment [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/VideoInFragment)
 
@@ -220,19 +229,25 @@ To override this behavior you can build player setting desired Autoplay value:
 
 <details>
 	<summary>iOS</summary>
+	
 ```swift
 OneSDK.Provider.default.getConfiguration()
-							.map(OneSDK.init)
-							.then { $0.getPlayer(videoID: videoID, autoplay: true) }
-				            .onComplete(callback: handle)
-            
+	.map(OneSDK.init)
+	.then { $0.getPlayer(videoID: videoID, autoplay: true) }
+	.onComplete(callback: handle)
 ```
 </details>
 <details>
 	<summary>Android</summary>
-...
+	
+```java
+oneSDK.createBuilder()
+        .setAutoplay(false)
+        // .buildFor...
+```
 </details>
 
+<br>
 If AutoPlay mode is off, the user will have to tap the play button to start the playback process. Alternatively, you can programmatically do this by controlling the Player object.
 
 #### Showing thumbnails for videos <a name="t12"></a>
@@ -246,10 +261,10 @@ Here is a  simple example how to show thumbnails:
 </details>
 <details>
 	<summary>Android</summary>
+<br>
 
 Load Content Thumbnails [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ContentLoadThumbnails)
 </details>
-
 
 #### Modifying metadata of the player (ANDROID ONLY) <a name="t13"></a>
 By default, OMSDK does all the work for you and provides you with Player object that is fully ready to use. As an alternative, you can check and/or modify all the metadata before constructing player.
@@ -257,11 +272,8 @@ By default, OMSDK does all the work for you and provides you with Player object 
 Here is a  simple example on changing video title:
 
 <details>
-	<summary>iOS</summary>
-...
-</details>
-<details>
 	<summary>Android</summary>
+<br>
 
 Override Content Metadata [link](https://github.com/aol-public/OneMobileSDK-examples-android/tree/master/ContentOverrideMetadata)
 </details>
